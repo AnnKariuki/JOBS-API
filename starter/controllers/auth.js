@@ -1,14 +1,18 @@
 const User = require('../models/User')
 const {StatusCodes} = require('http-status-codes')
 const {BadRequestError} = require('../errors')
+const bcrypt = require('bcryptjs')
 const register = async (req, res) => {
-    // const {name, email, password} = req.body
+    const {name, email, password} = req.body
     // if(!name || !email || !password){
     //     throw new BadRequestError('Please provide name, email and password')
     // }
     //we could use this above but right now we are using the schema validation to make sure the user has all the correct fields 
-    const user = await User.create({...req.body})
-    res.status(StatusCodes.CREATED).json(req.body)
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    const tempUser = {name, email, password:hashedPassword}
+    const user = await User.create({...tempUser})
+    res.status(StatusCodes.CREATED).json({user})
 }
 
 const login = async (req, res) => {
