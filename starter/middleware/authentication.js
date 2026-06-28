@@ -1,20 +1,22 @@
-const User = require('./models/User')
+const User = require('../models/User')
 const jwt = require('jsonwebtoken')
-const {UnauthenticatedError} = require('../errors')
+const { UnauthenticatedError } = require('../errors')
 
-const auth = (req,res,next) => {
+const auth = (req, res, next) => {
     //check header
     const authHeader = req.headers.authorization
-    if(!authHeader || !authHeader.startsWith('Bearer ')){
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
         throw new UnauthenticatedError('Authentication invalid')
     }
     const token = authHeader.split(' ')[1]
-    try{
+    try {
         //jwt.verify returns the decoded jwt payload
         const payload = jwt.verify(token, process.env.JWT_SECRET)
         // attach the user to the job routes
-        req.user = {userId:payload.userId, name:payload.name}
-    } catch (error){
+        req.user = { userId: payload.userId, name: payload.name }
+        next()
+    } catch (error) {
+        console.log('in catch block')
         throw new UnauthenticatedError('Authentication invalid')
     }
 }

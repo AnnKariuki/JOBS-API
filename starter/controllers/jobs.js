@@ -7,7 +7,8 @@ const getJob = async (req, res) => {
 }
 
 const createJob = async (req, res) => {
-    res.send('create job')
+    console.log('request in create job controller')
+    res.json(req.user)
 }
 
 const updateJob = async (req, res) => {
