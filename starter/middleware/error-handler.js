@@ -7,6 +7,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     message: err.message,
     stack: err.stack,
+    name: err.name 
   })
 }
 
